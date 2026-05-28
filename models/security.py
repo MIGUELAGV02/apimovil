@@ -25,7 +25,10 @@ def create_access_token(user_payload):
         "exp": datetime.now(timezone.utc) + timedelta(minutes=expiration_minutes),
         "iat": datetime.now(timezone.utc),
     }
-    return jwt.encode(payload, secret_key, algorithm=algorithm)
+    token = jwt.encode(payload, secret_key, algorithm=algorithm)
+    if isinstance(token, bytes):
+        return token.decode()
+    return token
 
 
 def _extract_token():

@@ -41,7 +41,8 @@ def register():
 		token = create_access_token({"id": user_id, "nombre": nombre, "apellido": apellido, "email": email, "rol": rol})
 		return jsonify({
 			"message": "Usuario creado correctamente",
-			"token": token,
+			"access_token": token,
+			"token_type": "Bearer",
 			"user": {"id": user_id, "nombre": nombre, "apellido": apellido, "email": email, "rol": rol},
 		}), 201
 	except Error as error:
@@ -77,7 +78,7 @@ def login():
 		}
 		token = create_access_token(payload)
 
-		return jsonify({"message": "Inicio de sesión correcto", "token": token, "user": payload}), 200
+		return jsonify({"message": "Inicio de sesión correcto", "access_token": token, "token_type": "Bearer", "user": payload}), 200
 	except Error as error:
 		return jsonify({"error": str(error)}), 500
 
