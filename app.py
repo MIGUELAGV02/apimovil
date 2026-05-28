@@ -28,10 +28,15 @@ def create_app():
 
 	@app.get("/")
 	def root():
-		try:
+		index_path = os.path.join(os.getcwd(), "index.html")
+		if os.path.exists(index_path):
 			return send_from_directory(os.getcwd(), "index.html")
-		except Exception:
-			return jsonify({"status": "ok", "message": "Index not found - API running"}), 200
+
+		return jsonify({"status": "ok", "message": "EvaUno API running"}), 200
+
+	@app.get("/api")
+	def api_root():
+		return jsonify({"status": "ok", "message": "EvaUno API root"}), 200
 
 	@app.errorhandler(400)
 	def bad_request(error):

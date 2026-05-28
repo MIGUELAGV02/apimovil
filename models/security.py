@@ -37,9 +37,14 @@ def create_access_token(user_payload):
 
 def _extract_token():
     auth_header = request.headers.get("Authorization", "")
-    if not auth_header.startswith("Bearer "):
-        return None
-    return auth_header.split(" ", 1)[1].strip()
+    if auth_header.startswith("Bearer "):
+        return auth_header.split(" ", 1)[1].strip().strip('"')
+
+    token_header = request.headers.get("X-Access-Token", "")
+    if token_header:
+        return token_header.strip().strip('"')
+
+    return auth_header.strip().strip('"') or None
 
 
 def token_required(view_func):
@@ -53,7 +58,12 @@ def token_required(view_func):
         algorithm = os.getenv("JWT_ALGORITHM", "HS256")
 
         try:
-            decoded_token = jwt.decode(token, secret_key, algorithms=[algorithm])
+            decoded_token = jwt.decode(
+                token,
+                secret_key,
+                algorithms=[algorithm],
+                options={"verify_aud": False},
+            )
             g.current_user = decoded_token["sub"]
         except jwt.ExpiredSignatureError:
             return jsonify({"error": "Token expirado"}), 401
