@@ -54,7 +54,7 @@ def create_user():
 	nombre = (data.get("nombre") or "").strip()
 	apellido = (data.get("apellido") or "").strip()
 	email = (data.get("email") or "").strip().lower()
-	contrasena = data.get("contrasena") or ""
+	contrasena = data.get("contrasena") or data.get("password") or ""
 	rol = (data.get("rol") or "usuario").strip().lower()
 
 	if not nombre or not apellido or not email or not contrasena:
@@ -89,7 +89,7 @@ def update_user(user_id):
 	nombre = (data.get("nombre") or "").strip()
 	apellido = (data.get("apellido") or "").strip()
 	email = (data.get("email") or "").strip().lower()
-	contrasena = data.get("contrasena") or ""
+	contrasena = data.get("contrasena") or data.get("password") or ""
 	rol = (data.get("rol") or "").strip().lower()
 
 	updates = []

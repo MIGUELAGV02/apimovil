@@ -3,18 +3,24 @@ import os
 from datetime import datetime, timedelta, timezone
 from functools import wraps
 
+import bcrypt as bcrypt_lib
 import jwt
 from flask import current_app, jsonify, g, request
-from passlib.hash import bcrypt
 
 
 def hash_password(password: str) -> str:
-    return bcrypt.hash(password)
+    return bcrypt_lib.hashpw(password.encode("utf-8"), bcrypt_lib.gensalt()).decode("utf-8")
 
 
 def verify_password(password: str, hashed_password: str) -> bool:
     try:
-        return bcrypt.verify(password, hashed_password)
+        if not hashed_password:
+            return False
+
+        if hashed_password.startswith("$2"):
+            return bcrypt_lib.checkpw(password.encode("utf-8"), hashed_password.encode("utf-8"))
+
+        return password == hashed_password
     except Exception:
         return False
 
