@@ -1,7 +1,7 @@
 import os
 
 from dotenv import load_dotenv
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_from_directory
 from flask_cors import CORS
 
 from controllers.authController import auth_bp
@@ -25,6 +25,13 @@ def create_app():
 	@app.get("/api/health")
 	def health_check():
 		return jsonify({"status": "ok"}), 200
+
+	@app.get("/")
+	def root():
+		try:
+			return send_from_directory(os.getcwd(), "index.html")
+		except Exception:
+			return jsonify({"status": "ok", "message": "Index not found - API running"}), 200
 
 	@app.errorhandler(400)
 	def bad_request(error):
