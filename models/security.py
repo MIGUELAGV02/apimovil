@@ -1,18 +1,22 @@
 import os
+
 from datetime import datetime, timedelta, timezone
 from functools import wraps
 
 import jwt
 from flask import current_app, jsonify, g, request
-from werkzeug.security import check_password_hash, generate_password_hash
+from passlib.hash import bcrypt
 
 
-def hash_password(password):
-    return generate_password_hash(password)
+def hash_password(password: str) -> str:
+    return bcrypt.hash(password)
 
 
-def verify_password(password, hashed_password):
-    return check_password_hash(hashed_password, password)
+def verify_password(password: str, hashed_password: str) -> bool:
+    try:
+        return bcrypt.verify(password, hashed_password)
+    except Exception:
+        return False
 
 
 def create_access_token(user_payload):
